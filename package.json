@@ -1,0 +1,15 @@
+{
+  "name": "eshaas",
+  "version": "1.0.0",
+  "description": "Eshaas - Emotional Intelligence AI Platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "cd backend && nodemon server.js",
+    "start": "cd backend && node server.js",
+    "install:all": "npm install && cd backend && npm install"
+  },
+  "keywords": ["emotional-intelligence", "ai", "wellness", "chat"],
+  "author": "Sneha Singh",
+  "license": "MIT",
+  "dependencies": {}
+}
