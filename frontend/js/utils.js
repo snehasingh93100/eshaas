@@ -290,12 +290,18 @@ function throttle(func, limit = 300) {
 }
 
 /**
- * Generate a random ID string.
+ * Generate a random ID string using crypto.getRandomValues when available.
  * @param {number} length
  * @returns {string}
  */
 function generateId(length = 12) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const arr = new Uint8Array(length);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, b => chars[b % chars.length]).join('');
+  }
+  // Legacy fallback (non-security-critical client utility)
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));

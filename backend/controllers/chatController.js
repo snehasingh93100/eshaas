@@ -6,6 +6,7 @@
 
 const { randomInt } = require('crypto');
 const axios = require('axios');
+const Session = require('../models/Session');
 const Message = require('../models/Message');
 
 // ===== EMOTION RESPONSE TEMPLATES =====
