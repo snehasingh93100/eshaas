@@ -1,185 +1,156 @@
 const axios = require('axios');
 const { db } = require('../config/firebase');
+const { v4: uuidv4 } = require('uuid');
 
-// Emotion detection using Hugging Face API
-const detectEmotion = async (text) => {
+const HUGGING_FACE_API = 'https://api-inference.huggingface.co/models';
+const EMOTION_MODEL = 'j-hartmann/emotion-english-distilroberta-base';
+const CHAT_MODEL = 'google/flan-t5-base';
+
+// Detect emotion from text
+exports.detectEmotion = async (text) => {
   try {
     const response = await axios.post(
-      'https://api-inference.huggingface.co/models/j-hartmann/emotion-english-distilroberta-base',
+      `${HUGGING_FACE_API}/${EMOTION_MODEL}`,
       { inputs: text },
       {
         headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`
+          Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
+          'Content-Type': 'application/json'
         }
       }
     );
 
     if (response.data && response.data[0]) {
-      const emotions = response.data[0];
-      // Sort by score and return top emotion
-      const topEmotion = emotions.sort((a, b) => b.score - a.score)[0];
-      return {
-        emotion: topEmotion.label,
-        confidence: (topEmotion.score * 100).toFixed(2),
-        allEmotions: emotions
-      };
+      return response.data[0].reduce((prev, current) =>
+        prev.score > current.score ? prev : current
+      );
     }
-    return { emotion: 'neutral', confidence: 50 };
+    return { label: 'neutral', score: 0 };
   } catch (error) {
-    console.error('Emotion detection error:', error);
-    return { emotion: 'neutral', confidence: 50 };
+    console.error('Emotion detection error:', error.message);
+    return { label: 'neutral', score: 0 };
   }
 };
 
-// Generate AI response based on emotion
-const generateAIResponse = (userMessage, emotion) => {
-  const emotionalResponses = {
-    joy: [
-      "That's wonderful! Your joy is contagious. Tell me more about what makes you happy.",
-      "I love your positive energy! What brought this happiness to you?",
-      "Your happiness lights up the conversation! Keep sharing those beautiful moments."
-    ],
-    sadness: [
-      "I sense some sadness in your words. I'm here to listen. Would you like to talk about it?",
-      "It's okay to feel sad. Sometimes our emotions guide us to important realizations.",
-      "I'm here for you. Your feelings matter, and I'm listening with compassion."
-    ],
-    anger: [
-      "I can feel the intensity in your words. Let's take a moment to understand what's bothering you.",
-      "Your anger is valid. Let's explore what triggered these feelings together.",
-      "Sometimes anger is a sign we need to address something important. I'm here to help."
-    ],
-    fear: [
-      "I notice some concern in your message. Remember, you're not alone in this.",
-      "Fear is a natural emotion. Let's talk through what's worrying you.",
-      "It's okay to feel afraid. Sharing your worries can help lighten the load."
-    ],
-    surprise: [
-      "That's quite surprising! Tell me more about this unexpected turn of events.",
-      "I love the energy of surprise! What happened that caught you off guard?",
-      "Something surprising caught your attention! Let's explore that together."
-    ],
-    disgust: [
-      "I sense some strong feelings about this. What's making you feel this way?",
-      "Your perspective matters. Let's talk about what's bothering you.",
-      "I'm here to understand your concerns. What's on your mind?"
-    ],
-    neutral: [
-      "I'm here to support you. What's on your mind today?",
-      "I'm listening. Feel free to share anything you'd like to talk about.",
-      "Let's have a meaningful conversation. What would you like to discuss?"
-    ]
-  };
+// Generate AI response
+exports.generateResponse = async (userMessage) => {
+  try {
+    // Simple wellness-focused responses based on emotions
+    const responses = {
+      joy: "That's wonderful! 🌟 I'm so glad you're experiencing positive emotions. Keep nurturing these moments!",
+      sadness: "I hear you, and it's okay to feel this way. 💙 Let's talk through this together. Remember, difficult emotions are temporary.",
+      anger: "I understand your frustration. 🔥 Let's take a moment to process this. What's bothering you the most?",
+      fear: "It's natural to feel anxious sometimes. 💚 Let's explore what's worrying you and work through it together.",
+      neutral: "Thank you for sharing. Tell me more about what's on your mind. I'm here to listen.",
+      surprise: "That's interesting! 😊 Tell me more about this experience.",
+      disgust: "I sense some strong feelings here. Let's dig deeper into what's causing this reaction."
+    };
 
-  const responses = emotionalResponses[emotion] || emotionalResponses.neutral;
-  return responses[Math.floor(Math.random() * responses.length)];
+    const randomResponse = responses[userMessage.label] || responses.neutral;
+    
+    return {
+      text: randomResponse,
+      emotion: userMessage.label,
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Response generation error:', error);
+    return {
+      text: "I'm here to listen and support you. Could you tell me more about what you're feeling?",
+      emotion: 'neutral',
+      timestamp: new Date().toISOString()
+    };
+  }
 };
 
-// Send Message
-const sendMessage = async (req, res) => {
+// Send message
+exports.sendMessage = async (req, res) => {
   try {
-    const { userId } = req.user;
-    const { message, sessionId } = req.body;
+    const { sessionId, message } = req.body;
+    const userId = req.user.userId;
 
     if (!message || !sessionId) {
-      return res.status(400).json({ 
-        error: 'Message and session ID are required',
-        status: 400 
-      });
+      return res.status(400).json({ error: 'Message and sessionId are required' });
     }
 
-    // Detect emotion in user message
-    const emotionData = await detectEmotion(message);
+    // Save user message
+    const messageId = uuidv4();
+    const userEmotion = await exports.detectEmotion(message);
 
-    // Generate AI response
-    const aiResponse = generateAIResponse(message, emotionData.emotion);
-
-    // Store user message
-    const userMessageId = Date.now().toString();
-    await db.ref(`sessions/${sessionId}/messages/${userMessageId}`).set({
+    await db.ref(`messages/${sessionId}/${messageId}`).set({
       type: 'user',
       content: message,
-      emotion: emotionData.emotion,
-      emotionConfidence: emotionData.confidence,
+      emotion: userEmotion,
       timestamp: new Date().toISOString(),
-      allEmotions: emotionData.allEmotions
+      userId
     });
 
-    // Store AI response
-    const aiMessageId = (Date.now() + 1).toString();
-    await db.ref(`sessions/${sessionId}/messages/${aiMessageId}`).set({
-      type: 'ai',
-      content: aiResponse,
-      emotion: emotionData.emotion,
+    // Generate AI response
+    const aiResponse = await exports.generateResponse(userEmotion);
+    const aiMessageId = uuidv4();
+
+    await db.ref(`messages/${sessionId}/${aiMessageId}`).set({
+      type: 'assistant',
+      content: aiResponse.text,
+      emotion: aiResponse.emotion,
       timestamp: new Date().toISOString()
     });
 
-    // Update session metadata
-    const sessionRef = db.ref(`sessions/${sessionId}`);
-    const sessionSnapshot = await sessionRef.once('value');
-    const session = sessionSnapshot.val();
-
-    await sessionRef.update({
-      messageCount: (session.messageCount || 0) + 1,
-      lastMessage: message,
-      lastMessageTime: new Date().toISOString(),
-      dominantEmotion: emotionData.emotion,
-      lastDetectedEmotions: emotionData.allEmotions
+    // Update session with message count and last emotion
+    await db.ref(`sessions/${sessionId}`).update({
+      messageCount: await getMessageCount(sessionId) + 2,
+      lastEmotion: userEmotion.label,
+      updatedAt: new Date().toISOString()
     });
 
-    res.json({
-      message: 'Message processed successfully',
+    res.status(200).json({
+      success: true,
       userMessage: {
-        id: userMessageId,
+        id: messageId,
         content: message,
-        emotion: emotionData.emotion,
-        confidence: emotionData.confidence
+        emotion: userEmotion,
+        type: 'user'
       },
       aiMessage: {
         id: aiMessageId,
-        content: aiResponse
-      },
-      status: 200
+        content: aiResponse.text,
+        emotion: aiResponse.emotion,
+        type: 'assistant'
+      }
     });
   } catch (error) {
     console.error('Send message error:', error);
-    res.status(500).json({ 
-      error: error.message || 'Failed to send message',
-      status: 500 
-    });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Get Message History
-const getMessageHistory = async (req, res) => {
+// Get chat history
+exports.getChatHistory = async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const { userId } = req.user;
+    const userId = req.user.userId;
 
-    const messagesSnapshot = await db.ref(`sessions/${sessionId}/messages`).once('value');
-    const messages = messagesSnapshot.val() || {};
+    // Verify session belongs to user
+    const sessionSnapshot = await db.ref(`sessions/${sessionId}`).once('value');
+    if (!sessionSnapshot.exists() || sessionSnapshot.val().userId !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
 
-    const messageArray = Object.entries(messages).map(([id, msg]) => ({
-      id,
-      ...msg
-    })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    const messagesSnapshot = await db.ref(`messages/${sessionId}`).once('value');
+    const messages = messagesSnapshot.exists() ? Object.values(messagesSnapshot.val()) : [];
 
-    res.json({
-      messages: messageArray,
-      count: messageArray.length,
-      status: 200
+    res.status(200).json({
+      sessionId,
+      messages: messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     });
   } catch (error) {
-    console.error('Get message history error:', error);
-    res.status(500).json({ 
-      error: error.message || 'Failed to retrieve message history',
-      status: 500 
-    });
+    console.error('Get chat history error:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = {
-  sendMessage,
-  getMessageHistory,
-  detectEmotion
-};
+// Helper function
+async function getMessageCount(sessionId) {
+  const snapshot = await db.ref(`messages/${sessionId}`).once('value');
+  return snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+}
