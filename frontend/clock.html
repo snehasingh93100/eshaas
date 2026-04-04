@@ -494,8 +494,8 @@
       }
 
       /**
-       * Get current UTC offset string for a timezone (e.g. "UTC+5:30")
-       * Computed from the difference between UTC and the local time in that zone.
+       * Get current UTC offset string for a timezone (e.g. "GMT+5:30").
+       * Returns a formatted string representation of the current offset.
        */
       function getUTCOffset(tz, now) {
         // Use Intl to get the numeric offset in minutes
@@ -572,7 +572,7 @@
           var dateFmt = getDateFormatter(cardData.tz);
           cardData.dateEl.textContent = dateFmt.format(now);
 
-          // UTC offset (lazy — expensive, so we only compute once per minute)
+          // UTC offset — updates once per minute (at :00 seconds), or on first render
           if (sec === 0 || cardData.offsetEl.textContent === '') {
             cardData.offsetEl.textContent = getUTCOffset(cardData.tz, now);
           }

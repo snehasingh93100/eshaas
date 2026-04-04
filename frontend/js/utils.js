@@ -47,7 +47,6 @@ function showAlert(elementId, message, type = 'error') {
 
 // Auto-check auth on page load (except auth pages)
 const isAuthPage = window.location.pathname.endsWith('index.html') ||
-                   window.location.pathname === '/' ||
                    window.location.pathname.endsWith('/');
 if (!isAuthPage) {
   checkAuth();
