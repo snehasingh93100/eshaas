@@ -5,7 +5,12 @@
 'use strict';
 
 const bcrypt = require('bcryptjs');
+const { randomBytes } = require('crypto');
 const { db, getMockStore, isFirebaseAvailable } = require('../config/firebase');
+
+function generateId(prefix) {
+  return `${prefix}_${Date.now()}_${randomBytes(4).toString('hex')}`;
+}
 
 const COLLECTION = 'users';
 const SALT_ROUNDS = 10;
@@ -38,7 +43,7 @@ const User = {
 
     // In-memory fallback
     const store = getMockStore();
-    const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const id = generateId('user');
     const user = { id, ...userDoc };
     store.users.set(id, user);
     const safe = { ...user };

@@ -22,7 +22,12 @@ const PORT = process.env.PORT || 5000;
 
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: false,
+  // CSP is configured for API-only responses (no HTML served by this server)
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'none'"],
+    },
+  },
 }));
 
 // ===== CORS =====

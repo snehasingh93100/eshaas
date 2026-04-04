@@ -4,8 +4,8 @@
 
 'use strict';
 
+const { randomInt } = require('crypto');
 const axios = require('axios');
-const Session = require('../models/Session');
 const Message = require('../models/Message');
 
 // ===== EMOTION RESPONSE TEMPLATES =====
@@ -145,7 +145,7 @@ function detectEmotionKeywords(text) {
  */
 function getAIResponse(emotion) {
   const responses = EMOTION_RESPONSES[emotion] || EMOTION_RESPONSES.neutral;
-  return responses[Math.floor(Math.random() * responses.length)];
+  return responses[randomInt(responses.length)];
 }
 
 // ===== CONTROLLER FUNCTIONS =====

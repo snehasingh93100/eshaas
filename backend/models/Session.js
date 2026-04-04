@@ -4,7 +4,12 @@
 
 'use strict';
 
+const { randomBytes } = require('crypto');
 const { db, getMockStore, isFirebaseAvailable } = require('../config/firebase');
+
+function generateId(prefix) {
+  return `${prefix}_${Date.now()}_${randomBytes(4).toString('hex')}`;
+}
 
 const COLLECTION = 'sessions';
 
@@ -36,7 +41,7 @@ const Session = {
 
     // In-memory fallback
     const store = getMockStore();
-    const id = `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const id = generateId('session');
     const session = { id, ...sessionDoc };
     store.sessions.set(id, session);
     return session;
