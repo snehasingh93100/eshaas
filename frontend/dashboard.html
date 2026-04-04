@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eshaas — Dashboard | Your Session Analytics</title>
+  <meta name="description" content="Track your emotional wellness journey with Eshaas. View session history, emotion analytics, and personal insights." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="dashboard-page">
+
+  <div id="notifications-container"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="home.html" class="navbar-brand" aria-label="Go to Eshaas home">
+      <div class="navbar-logo" aria-hidden="true">E</div>
+      <span class="navbar-title">Eshaas</span>
+    </a>
+    <div class="navbar-nav" aria-label="Page links">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="chat.html" class="nav-link">Chat</a>
+      <a href="dashboard.html" class="nav-link active">Dashboard</a>
+    </div>
+    <div class="navbar-user">
+      <div class="user-avatar" id="user-avatar" aria-hidden="true">U</div>
+      <span class="user-name" id="user-name">User</span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm" aria-label="Log out">Log out</button>
+    </div>
+  </nav>
+
+  <!-- ===== DASHBOARD MAIN ===== -->
+  <main class="dashboard-main" role="main">
+    <div class="container">
+
+      <!-- Page Header -->
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">My Dashboard</h1>
+          <p class="dashboard-subtitle">Track your emotional wellness journey and session analytics.</p>
+        </div>
+        <div class="dashboard-actions">
+          <button id="export-btn" class="btn btn-secondary btn-sm" aria-label="Export sessions data">
+            ⬇️ Export Data
+          </button>
+          <a href="chat.html" id="new-session-btn" class="btn btn-primary btn-sm" aria-label="Start a new chat session">
+            💬 New Session
+          </a>
+        </div>
+      </div>
+
+      <!-- ===== STATS CARDS ===== -->
+      <div class="stats-cards-grid" role="region" aria-label="Overview statistics">
+        <div class="stat-card purple">
+          <div class="stat-card-header">
+            <div class="stat-card-icon" aria-hidden="true">💬</div>
+            <span class="stat-card-trend trend-neutral" aria-label="Total sessions">—</span>
+          </div>
+          <span class="stat-card-value" id="stat-total-sessions">—</span>
+          <span class="stat-card-label">Total Sessions</span>
+        </div>
+
+        <div class="stat-card blue">
+          <div class="stat-card-header">
+            <div class="stat-card-icon" aria-hidden="true">📨</div>
+            <span class="stat-card-trend trend-neutral" aria-label="Total messages">—</span>
+          </div>
+          <span class="stat-card-value" id="stat-total-messages">—</span>
+          <span class="stat-card-label">Total Messages</span>
+        </div>
+
+        <div class="stat-card orange">
+          <div class="stat-card-header">
+            <div class="stat-card-icon" aria-hidden="true">🎭</div>
+            <span class="stat-card-trend trend-neutral" aria-label="Top emotion">—</span>
+          </div>
+          <span class="stat-card-value" id="stat-top-emotion" style="font-size:1.5rem;">—</span>
+          <span class="stat-card-label">Most Common Emotion</span>
+        </div>
+
+        <div class="stat-card green">
+          <div class="stat-card-header">
+            <div class="stat-card-icon" aria-hidden="true">⏱</div>
+            <span class="stat-card-trend trend-neutral" aria-label="Total chat time">—</span>
+          </div>
+          <span class="stat-card-value" id="stat-total-time">—</span>
+          <span class="stat-card-label">Total Chat Time</span>
+        </div>
+      </div>
+
+      <!-- ===== CHARTS ===== -->
+      <div class="charts-grid" role="region" aria-label="Analytics charts">
+        <!-- Emotion Distribution -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">🎭 Emotion Distribution</div>
+              <div class="chart-card-subtitle">How you've been feeling across all sessions</div>
+            </div>
+          </div>
+          <div class="chart-container" aria-label="Emotion distribution doughnut chart">
+            <canvas id="emotion-chart"></canvas>
+          </div>
+          <div class="emotion-legend" id="emotion-legend" role="list" aria-label="Emotion legend"></div>
+        </div>
+
+        <!-- Session Timeline -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">📅 Sessions Over Time</div>
+              <div class="chart-card-subtitle">Your activity in the past 14 days</div>
+            </div>
+          </div>
+          <div class="chart-container" aria-label="Sessions timeline line chart">
+            <canvas id="timeline-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SESSIONS TABLE ===== -->
+      <section class="sessions-section" aria-labelledby="sessions-table-heading">
+        <div class="sessions-header">
+          <div>
+            <h2 class="sessions-title" id="sessions-table-heading">
+              Session History
+              <span class="sessions-count" id="sessions-count"></span>
+            </h2>
+          </div>
+          <div class="sessions-filters" role="search" aria-label="Filter sessions">
+            <div class="search-wrap">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <input
+                type="search"
+                id="search-sessions"
+                class="search-input"
+                placeholder="Search sessions..."
+                aria-label="Search sessions by date, emotion, or ID"
+              />
+            </div>
+            <select id="emotion-filter" class="filter-select" aria-label="Filter by emotion">
+              <option value="">All Emotions</option>
+              <option value="joy">😊 Joy</option>
+              <option value="sadness">😢 Sadness</option>
+              <option value="anger">😠 Anger</option>
+              <option value="fear">😨 Fear</option>
+              <option value="surprise">😮 Surprise</option>
+              <option value="neutral">😐 Neutral</option>
+            </select>
+            <select id="status-filter" class="filter-select" aria-label="Filter by status">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="ended">Ended</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="sessions-table-wrap">
+          <table class="sessions-table" aria-label="Session history table">
+            <thead>
+              <tr>
+                <th scope="col">Date &amp; Time</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Messages</th>
+                <th scope="col">Top Emotion</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sessions-tbody">
+              <!-- Rows injected by dashboard.js -->
+              <tr>
+                <td colspan="6">
+                  <div style="text-align:center;padding:3rem;color:var(--color-gray-400);">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">⏳</div>
+                    Loading sessions...
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer -->
+        <div class="sessions-footer">
+          <span class="sessions-page-info" id="page-info"></span>
+          <div class="pagination" id="pagination" role="navigation" aria-label="Sessions pagination"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== SESSION DETAIL MODAL ===== -->
+  <div id="session-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Session Details</h3>
+        <button class="modal-close" data-modal-close aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="session-detail-content">
+          <!-- Overview Stats -->
+          <div class="session-detail-stats" role="list" aria-label="Session statistics">
+            <div class="detail-stat" role="listitem">
+              <span class="detail-stat-value" id="modal-session-duration">—</span>
+              <span class="detail-stat-label">Duration</span>
+            </div>
+            <div class="detail-stat" role="listitem">
+              <span class="detail-stat-value" id="modal-session-messages">—</span>
+              <span class="detail-stat-label">Messages</span>
+            </div>
+            <div class="detail-stat" role="listitem">
+              <span class="detail-stat-value" id="modal-session-emotion" style="font-size:1.25rem;">—</span>
+              <span class="detail-stat-label">Top Emotion</span>
+            </div>
+          </div>
+
+          <!-- Date -->
+          <div style="font-size:var(--font-size-sm);color:var(--color-gray-500);">
+            <strong>Started:</strong> <span id="modal-session-date">—</span>
+          </div>
+
+          <!-- Messages Preview -->
+          <div>
+            <div style="font-size:var(--font-size-sm);font-weight:700;color:var(--color-gray-600);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">
+              Conversation Preview
+            </div>
+            <div class="session-messages-preview" id="modal-messages-preview" role="log" aria-label="Session messages preview">
+              <!-- Messages injected by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost btn-sm" data-modal-close>Close</button>
+        <a href="chat.html" class="btn btn-primary btn-sm">💬 Continue Chatting</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Close modal on overlay click -->
+  <script>
+    document.getElementById('session-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        e.currentTarget.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

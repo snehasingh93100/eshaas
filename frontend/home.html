@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eshaas — Home | Your Emotional Intelligence Companion</title>
+  <meta name="description" content="Eshaas is your AI-powered emotional intelligence companion. Chat, track emotions, and gain insights into your mental wellness journey." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/home.css" />
+</head>
+<body class="home-page">
+
+  <div id="notifications-container"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="home.html" class="navbar-brand" aria-label="Eshaas home">
+      <div class="navbar-logo" aria-hidden="true">E</div>
+      <span class="navbar-title">Eshaas</span>
+    </a>
+
+    <div class="navbar-nav" aria-label="Page links">
+      <a href="home.html" class="nav-link active">Home</a>
+      <a href="chat.html" class="nav-link">Chat</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+    </div>
+
+    <div class="navbar-user">
+      <div class="user-avatar" id="user-avatar" aria-hidden="true">U</div>
+      <span class="user-name" id="user-name">User</span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm" aria-label="Log out">Log out</button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <!-- Decorative particles -->
+    <div class="hero-particles" aria-hidden="true">
+      <div class="particle" style="width:80px;height:80px;top:15%;left:5%;--duration:7s;--delay:0s"></div>
+      <div class="particle" style="width:40px;height:40px;top:60%;left:10%;--duration:5s;--delay:1s"></div>
+      <div class="particle" style="width:60px;height:60px;top:25%;right:8%;--duration:9s;--delay:2s"></div>
+      <div class="particle" style="width:30px;height:30px;top:75%;right:15%;--duration:6s;--delay:0.5s"></div>
+      <div class="particle" style="width:100px;height:100px;bottom:10%;left:40%;--duration:8s;--delay:1.5s"></div>
+    </div>
+
+    <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;">
+      <!-- Content -->
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Powered by AI Emotional Intelligence
+        </div>
+
+        <h1 class="hero-title" id="hero-heading">
+          Meet <span class="highlight">Eshaas</span> —<br/>
+          Your AI Emotional<br/>
+          Intelligence Companion
+        </h1>
+
+        <p class="hero-description">
+          Eshaas listens, understands, and responds with genuine emotional intelligence.
+          Share your thoughts, track your mood, and discover patterns in your emotional wellness journey.
+        </p>
+
+        <div class="hero-actions">
+          <a href="chat.html" class="hero-btn-primary" aria-label="Start your emotional wellness journey">
+            Start Your Journey ✨
+          </a>
+          <a href="dashboard.html" class="hero-btn-secondary" aria-label="View your session dashboard">
+            📊 View Dashboard
+          </a>
+        </div>
+
+        <div class="hero-stats" aria-label="Platform statistics">
+          <div class="hero-stat">
+            <span class="hero-stat-value">97%</span>
+            <span class="hero-stat-label">Feel Heard</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">10K+</span>
+            <span class="hero-stat-label">Sessions</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">6</span>
+            <span class="hero-stat-label">Emotions Tracked</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Mockup -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card-mockup">
+          <div class="mockup-header">
+            <div class="mockup-avatar">🧠</div>
+            <div>
+              <div class="mockup-name">Eshaas AI</div>
+              <div class="mockup-status">Online and listening</div>
+            </div>
+          </div>
+          <div class="mockup-message user">
+            I've been feeling really overwhelmed lately...
+          </div>
+          <div class="mockup-message ai">
+            I hear you. Feeling overwhelmed is completely valid. Let's work through this together. Can you tell me more about what's been weighing on your mind?
+            <div class="mockup-emotion">😊 Empathy detected</div>
+          </div>
+          <div class="mockup-message user">
+            Thank you for understanding 💜
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES SECTION ===== -->
+  <section class="features section" id="features" aria-labelledby="features-heading">
+    <div class="container">
+      <h2 class="section-title" id="features-heading">Everything You Need for <span class="gradient-text">Emotional Wellness</span></h2>
+      <p class="section-subtitle">Eshaas combines cutting-edge AI with compassionate design to support your mental well-being.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrap purple" aria-hidden="true">💬</div>
+          <h3 class="feature-title">Text Chat</h3>
+          <p class="feature-desc">Express yourself freely in a safe, non-judgmental space. Eshaas listens to every word and responds with genuine understanding.</p>
+          <span class="feature-tag">Always Available</span>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap blue" aria-hidden="true">🎙️</div>
+          <h3 class="feature-title">Voice Chat</h3>
+          <p class="feature-desc">Talk out loud and let your emotions flow naturally. Our voice recognition captures your words and feelings with precision.</p>
+          <span class="feature-tag">Natural Conversation</span>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap orange" aria-hidden="true">🎭</div>
+          <h3 class="feature-title">Emotion Tracking</h3>
+          <p class="feature-desc">AI detects joy, sadness, anger, fear, surprise, and more from your messages to help you understand your emotional patterns.</p>
+          <span class="feature-tag">6 Emotions</span>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap green" aria-hidden="true">📊</div>
+          <h3 class="feature-title">Session Analytics</h3>
+          <p class="feature-desc">Visualize your emotional journey over time with detailed charts, session history, and insightful wellness metrics.</p>
+          <span class="feature-tag">Personal Insights</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works section" id="how-it-works" aria-labelledby="how-heading">
+    <div class="container">
+      <h2 class="section-title" id="how-heading">How <span class="gradient-text">Eshaas</span> Works</h2>
+      <p class="section-subtitle">Getting started is simple. Begin your emotional wellness journey in just three steps.</p>
+
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number" aria-hidden="true">1</div>
+          <h3 class="step-title">Create Your Account</h3>
+          <p class="step-desc">Sign up in seconds with just your name and email. Your conversations are private and securely encrypted.</p>
+        </div>
+        <div class="step">
+          <div class="step-number" aria-hidden="true">2</div>
+          <h3 class="step-title">Start a Conversation</h3>
+          <p class="step-desc">Type or speak your thoughts freely. Eshaas listens with full attention, detects your emotional tone, and responds thoughtfully.</p>
+        </div>
+        <div class="step">
+          <div class="step-number" aria-hidden="true">3</div>
+          <h3 class="step-title">Track Your Progress</h3>
+          <p class="step-desc">Review your session history, explore emotion trends, and gain powerful insights into your emotional wellness over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATISTICS ===== -->
+  <section class="stats-section" aria-labelledby="stats-heading">
+    <div class="container">
+      <h2 class="section-title text-white" id="stats-heading" style="margin-bottom:2.5rem;">Trusted by People on Their<br/>Wellness Journey</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon" aria-hidden="true">💬</div>
+          <span class="stat-value">10,000+</span>
+          <span class="stat-label">Conversations Completed</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon" aria-hidden="true">❤️</div>
+          <span class="stat-value">97%</span>
+          <span class="stat-label">Feel Heard &amp; Understood</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon" aria-hidden="true">🎭</div>
+          <span class="stat-value">6</span>
+          <span class="stat-label">Emotions Detected</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon" aria-hidden="true">⚡</div>
+          <span class="stat-value">&lt;1s</span>
+          <span class="stat-label">Response Time</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials section" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <h2 class="section-title" id="testimonials-heading">What People Are <span class="gradient-text">Saying</span></h2>
+      <p class="section-subtitle">Real stories from people who found clarity and comfort with Eshaas.</p>
+
+      <div class="testimonials-grid">
+        <article class="testimonial-card">
+          <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
+          <p class="testimonial-text">"Eshaas helped me understand why I was feeling so drained. The emotion tracking is incredibly accurate — it even noticed subtle feelings I hadn't consciously registered."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#7C3AED,#3B82F6)" aria-hidden="true">S</div>
+            <div>
+              <div class="testimonial-name">Sarah M.</div>
+              <div class="testimonial-role">Graduate Student</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card">
+          <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
+          <p class="testimonial-text">"I've tried many wellness apps, but Eshaas feels different. It actually listens and responds in a way that feels genuinely caring. The voice feature is a game-changer."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#F97316,#EF4444)" aria-hidden="true">J</div>
+            <div>
+              <div class="testimonial-name">James T.</div>
+              <div class="testimonial-role">Software Engineer</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card">
+          <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
+          <p class="testimonial-text">"The analytics dashboard showed me that I'm most stressed on Mondays and most joyful on Fridays. Such simple insight, but it changed how I plan my week."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#10B981,#3B82F6)" aria-hidden="true">A</div>
+            <div>
+              <div class="testimonial-name">Aisha K.</div>
+              <div class="testimonial-role">Marketing Manager</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA SECTION ===== -->
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <div class="container">
+      <div class="cta-card">
+        <h2 class="cta-title" id="cta-heading">Ready to Begin Your Emotional Journey?</h2>
+        <p class="cta-desc">Start a conversation with Eshaas today and take the first step toward understanding yourself better.</p>
+        <a href="chat.html" class="cta-btn" aria-label="Start chatting with Eshaas">
+          💬 Start Chatting Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="home-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-brand">
+        <div class="footer-logo" aria-hidden="true">E</div>
+        <span class="footer-name">Eshaas</span>
+      </div>
+      <p class="footer-tagline">Your Emotional Intelligence Companion — Always here to listen.</p>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2024 Eshaas. Made with 💜 for emotional wellness.</p>
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Support</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script>
+    // Auth check and user info
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!requireAuth()) return;
+      const user = getUserData();
+      if (user) {
+        const el = document.getElementById('user-name');
+        const avatarEl = document.getElementById('user-avatar');
+        if (el) el.textContent = user.name || 'User';
+        if (avatarEl) avatarEl.textContent = getInitials(user.name || 'U');
+      }
+      document.getElementById('logout-btn')?.addEventListener('click', logout);
+    });
+  </script>
+</body>
+</html>

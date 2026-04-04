@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eshaas — Sign In | Your Emotional Intelligence Companion</title>
+  <meta name="description" content="Sign in to Eshaas, your AI-powered emotional intelligence companion. Process your emotions, gain insights, and feel truly heard." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Background Orbs -->
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="auth-orb auth-orb-3"></div>
+
+  <!-- Notifications Container -->
+  <div id="notifications-container"></div>
+
+  <div class="auth-container">
+    <!-- Brand -->
+    <div class="auth-brand">
+      <div class="auth-logo">E</div>
+      <div class="auth-brand-name">Eshaas</div>
+      <p class="auth-tagline">Your Emotional Intelligence Companion</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-card">
+      <!-- Tabs -->
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" data-tab="login" role="tab" aria-selected="true">Sign In</button>
+        <button class="auth-tab" data-tab="register" role="tab" aria-selected="false">Create Account</button>
+      </div>
+
+      <!-- ===== LOGIN FORM ===== -->
+      <form class="auth-form active" id="login-form" novalidate aria-labelledby="login-title">
+        <h2 class="auth-title" id="login-title">Welcome back</h2>
+        <p class="auth-subtitle">Sign in to continue your emotional wellness journey.</p>
+
+        <!-- Alert -->
+        <div id="login-alert" class="auth-alert" role="alert" aria-live="polite"></div>
+
+        <div class="form-group">
+          <label for="login-email" class="form-label">Email address</label>
+          <input
+            type="email"
+            id="login-email"
+            class="form-control"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          />
+          <span id="login-email-error" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <div class="input-group">
+            <input
+              type="password"
+              id="login-password"
+              class="form-control"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" class="password-toggle" data-target="login-password" aria-label="Toggle password visibility">👁️</button>
+          </div>
+          <span id="login-password-error" class="form-error"></span>
+        </div>
+
+        <button type="submit" id="login-btn" class="auth-submit-btn">
+          <span class="btn-spinner"></span>
+          <span class="btn-text">Sign In →</span>
+        </button>
+
+        <!-- Features hint -->
+        <div class="auth-features">
+          <div class="auth-feature-item">
+            <span class="auth-feature-icon">🔒</span>
+            End-to-end encrypted conversations
+          </div>
+          <div class="auth-feature-item">
+            <span class="auth-feature-icon">🧠</span>
+            AI-powered emotional intelligence
+          </div>
+          <div class="auth-feature-item">
+            <span class="auth-feature-icon">📊</span>
+            Personal emotion analytics
+          </div>
+        </div>
+      </form>
+
+      <!-- ===== REGISTER FORM ===== -->
+      <form class="auth-form" id="register-form" novalidate aria-labelledby="register-title">
+        <h2 class="auth-title" id="register-title">Start your journey</h2>
+        <p class="auth-subtitle">Create a free account and begin understanding your emotions.</p>
+
+        <!-- Alert -->
+        <div id="register-alert" class="auth-alert" role="alert" aria-live="polite"></div>
+
+        <div class="form-group">
+          <label for="register-name" class="form-label">Full name</label>
+          <input
+            type="text"
+            id="register-name"
+            class="form-control"
+            placeholder="Your full name"
+            autocomplete="name"
+            required
+          />
+          <span id="register-name-error" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="register-email" class="form-label">Email address</label>
+          <input
+            type="email"
+            id="register-email"
+            class="form-control"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          />
+          <span id="register-email-error" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="register-password" class="form-label">Password</label>
+          <div class="input-group">
+            <input
+              type="password"
+              id="register-password"
+              class="form-control"
+              placeholder="At least 8 characters"
+              autocomplete="new-password"
+              required
+              minlength="8"
+            />
+            <button type="button" class="password-toggle" data-target="register-password" aria-label="Toggle password visibility">👁️</button>
+          </div>
+          <span id="register-password-error" class="form-error"></span>
+          <div class="password-strength mt-2">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strength-fill"></div>
+            </div>
+            <span class="strength-text" id="strength-text"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="register-confirm" class="form-label">Confirm password</label>
+          <div class="input-group">
+            <input
+              type="password"
+              id="register-confirm"
+              class="form-control"
+              placeholder="Repeat your password"
+              autocomplete="new-password"
+              required
+            />
+            <button type="button" class="password-toggle" data-target="register-confirm" aria-label="Toggle confirm password visibility">👁️</button>
+          </div>
+          <span id="register-confirm-error" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="terms-check">
+            <input type="checkbox" id="register-terms" />
+            I agree to the <a href="#" tabindex="-1">Terms of Service</a> and <a href="#" tabindex="-1">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit" id="register-btn" class="auth-submit-btn">
+          <span class="btn-spinner"></span>
+          <span class="btn-text">Create Account →</span>
+        </button>
+      </form>
+
+      <p class="auth-footer-note">
+        By using Eshaas, you agree to our commitment to your privacy and emotional well-being.
+      </p>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

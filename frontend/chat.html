@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eshaas — Chat | Talk to Your AI Companion</title>
+  <meta name="description" content="Chat with Eshaas, your emotional intelligence AI companion. Get empathetic responses, emotion detection, and voice support." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/chat.css" />
+</head>
+<body class="chat-page">
+
+  <div id="notifications-container"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="home.html" class="navbar-brand" aria-label="Go to Eshaas home">
+      <div class="navbar-logo" aria-hidden="true">E</div>
+      <span class="navbar-title">Eshaas</span>
+    </a>
+    <div class="navbar-nav" aria-label="Page links">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="chat.html" class="nav-link active">Chat</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+    </div>
+    <div class="navbar-user">
+      <div class="user-avatar" id="user-avatar" aria-hidden="true">U</div>
+      <span class="user-name" id="user-name">User</span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm" aria-label="Log out">Log out</button>
+    </div>
+  </nav>
+
+  <!-- ===== CHAT LAYOUT ===== -->
+  <div class="chat-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="chat-sidebar" id="chat-sidebar" role="complementary" aria-label="Session information">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Current Session</div>
+        <div class="sidebar-session-id" id="sidebar-session-id">#NEW</div>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Session Timer -->
+        <div class="session-timer" role="timer" aria-live="off">
+          <div class="timer-label">⏱ Session Duration</div>
+          <div class="timer-display" id="timer-display">00:00</div>
+        </div>
+
+        <!-- Session Info -->
+        <div class="session-info-card">
+          <div class="session-info-title">Session Info</div>
+          <div class="session-info-row">
+            <span class="session-info-label">Started</span>
+            <span class="session-info-value" id="session-start-time">—</span>
+          </div>
+          <div class="session-info-row">
+            <span class="session-info-label">Messages</span>
+            <span class="session-info-value" id="message-count">0</span>
+          </div>
+          <div class="session-info-row">
+            <span class="session-info-label">Top Emotion</span>
+            <span class="session-info-value" id="top-emotion">—</span>
+          </div>
+        </div>
+
+        <!-- Emotion Summary -->
+        <div class="emotion-summary">
+          <div class="emotion-summary-title">🎭 Emotion Breakdown</div>
+          <div class="emotion-list" id="emotion-list">
+            <p style="font-size:0.75rem;color:var(--color-gray-400);text-align:center;">No emotions detected yet</p>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav" aria-label="Session actions">
+          <a href="home.html" class="sidebar-nav-link">
+            <span aria-hidden="true">🏠</span> Home
+          </a>
+          <a href="dashboard.html" class="sidebar-nav-link">
+            <span aria-hidden="true">📊</span> My Sessions
+          </a>
+          <button id="clear-session-btn" class="sidebar-nav-link danger" type="button">
+            <span aria-hidden="true">🔄</span> New Conversation
+          </button>
+          <button id="end-session-btn" class="sidebar-nav-link" type="button" style="color:var(--color-secondary);">
+            <span aria-hidden="true">✅</span> End &amp; Save Session
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <span style="font-size:0.7rem;color:var(--color-gray-400);display:block;text-align:center;">
+          🔒 Your conversations are private
+        </span>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CHAT AREA ===== -->
+    <main class="chat-main" role="main">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar" aria-controls="chat-sidebar">
+          ☰
+        </button>
+
+        <div class="chat-ai-info">
+          <div class="ai-avatar" aria-hidden="true">🧠</div>
+          <div>
+            <div class="ai-name">Eshaas AI</div>
+            <div class="ai-status">
+              <span class="ai-status-dot" aria-hidden="true"></span>
+              Active &amp; Listening
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-header-actions">
+          <button
+            id="tts-toggle"
+            class="btn btn-ghost btn-sm"
+            title="Toggle text-to-speech"
+            aria-label="Toggle text-to-speech"
+            onclick="toggleTTS(this)"
+          >
+            🔊
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages Area -->
+      <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Conversation messages">
+        <!-- Welcome message injected by JS or shown statically -->
+        <div id="welcome-message" class="welcome-message">
+          <div class="welcome-icon" aria-hidden="true">🧠</div>
+          <h3 class="welcome-title">Hi, I'm Eshaas!</h3>
+          <p class="welcome-text">I'm your emotional intelligence companion. Share what's on your mind — I'm here to listen and support you without judgment.</p>
+          <div class="welcome-suggestions" aria-label="Conversation starters">
+            <button class="suggestion-chip" type="button">I'm feeling anxious today</button>
+            <button class="suggestion-chip" type="button">I need to talk about something</button>
+            <button class="suggestion-chip" type="button">Help me process my emotions</button>
+            <button class="suggestion-chip" type="button">I'm having a great day! 🎉</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="chat-input-area">
+        <div class="chat-input-wrapper">
+          <textarea
+            id="chat-textarea"
+            class="chat-textarea"
+            placeholder="Share what's on your mind..."
+            rows="1"
+            maxlength="1000"
+            aria-label="Message input"
+            aria-multiline="true"
+          ></textarea>
+
+          <div class="chat-input-actions">
+            <button
+              id="voice-btn"
+              class="voice-btn"
+              type="button"
+              title="Hold to speak"
+              aria-label="Start voice input"
+            >
+              🎙️
+            </button>
+
+            <button
+              id="send-btn"
+              class="send-btn"
+              type="button"
+              aria-label="Send message"
+            >
+              ➤
+            </button>
+          </div>
+        </div>
+
+        <div class="input-footer">
+          <span class="input-hint">Press Enter to send · Shift+Enter for new line</span>
+          <span class="input-char-count" id="char-count" aria-live="polite">0/1000</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Voice Recording Overlay -->
+  <div id="voice-overlay" class="voice-overlay" role="status" aria-live="assertive">
+    <div class="voice-overlay-icon" aria-hidden="true">🎙️</div>
+    <div class="voice-waves" aria-hidden="true">
+      <div class="voice-wave"></div>
+      <div class="voice-wave"></div>
+      <div class="voice-wave"></div>
+      <div class="voice-wave"></div>
+      <div class="voice-wave"></div>
+      <div class="voice-wave"></div>
+      <div class="voice-wave"></div>
+    </div>
+    <p class="voice-overlay-text">Listening...</p>
+    <button class="voice-overlay-stop" type="button" onclick="if(window.eshaasVoice) window.eshaasVoice.stopRecording()">
+      Stop Recording
+    </button>
+  </div>
+
+  <!-- CSS keyframe needed for send button and voice -->
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error-bubble {
+      background: rgba(239,68,68,0.08) !important;
+      color: #DC2626 !important;
+      border: 1px solid rgba(239,68,68,0.2) !important;
+    }
+  </style>
+
+  <script>
+    function toggleTTS(btn) {
+      if (window.eshaasVoice) {
+        window.eshaasVoice.ttsEnabled = !window.eshaasVoice.ttsEnabled;
+        btn.textContent = window.eshaasVoice.ttsEnabled ? '🔊' : '🔇';
+        btn.title = window.eshaasVoice.ttsEnabled ? 'Mute AI voice' : 'Unmute AI voice';
+      }
+    }
+  </script>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
