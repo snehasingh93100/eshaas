@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eshaas - Chat</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">✨ Eshaas</a>
+    <ul class="navbar-nav">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="chat.html" class="active">Chat</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="clock.html">🕐 World Clock</a></li>
+    </ul>
+    <button class="navbar-btn" onclick="logout()">Logout</button>
+  </nav>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h2>✨ Eshaas Chat</h2>
+        <small style="opacity:0.8;">Your AI companion is here to listen</small>
+      </div>
+      <span id="sessionStatus" style="font-size:0.8rem; opacity:0.8;">Session active</span>
+    </div>
+
+    <div id="messages" class="messages">
+      <div class="message ai">
+        👋 Hi! I'm Eshaas, your emotional intelligence companion. Tell me how you're feeling today — I'm here to listen and support you. 💚
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="messageInput" placeholder="Type your thoughts here..." autocomplete="off">
+      <button onclick="sendMessage()">Send ➤</button>
+      <button class="voice-btn" onclick="startVoice()" title="Voice Input">🎤</button>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/chat.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

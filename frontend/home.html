@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eshaas - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">✨ Eshaas</a>
+    <ul class="navbar-nav">
+      <li><a href="home.html" class="active">Home</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="clock.html">🕐 World Clock</a></li>
+    </ul>
+    <div class="navbar-user">
+      <span id="userName"></span>
+      <button class="navbar-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Welcome to Your Wellness Journey 💚</h2>
+    <p>Eshaas is your AI-powered emotional intelligence companion — here to listen, understand, and support you every step of the way.</p>
+    <div class="hero-actions">
+      <a href="chat.html" class="btn-hero btn-hero-primary">Start Chatting 💬</a>
+      <a href="clock.html" class="btn-hero btn-hero-secondary">🕐 World Clock</a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Real-time Chat</h3>
+        <p>Have meaningful conversations powered by AI emotion detection that understands how you feel.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎤</div>
+        <h3>Voice Support</h3>
+        <p>Chat hands-free with voice input and have AI responses spoken aloud with text-to-speech.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Track Wellness</h3>
+        <p>Monitor your emotional wellness over time with detailed analytics and session history.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🕐</div>
+        <h3>World Clock</h3>
+        <p>Stay connected globally with a beautiful real-time digital clock showing multiple time zones.</p>
+        <div class="mt-2">
+          <a href="clock.html" class="btn btn-secondary" style="width:auto; padding: 8px 18px; font-size:0.875rem;">Open Clock →</a>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Secure & Private</h3>
+        <p>Your data stays secure with JWT authentication and encrypted storage in your personal database.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌈</div>
+        <h3>Beautiful Design</h3>
+        <p>Enjoy a vibrant, modern interface designed to feel calm, welcoming, and emotionally supportive.</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.name) {
+      document.getElementById('userName').textContent = 'Hi, ' + user.name + '!';
+    }
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
