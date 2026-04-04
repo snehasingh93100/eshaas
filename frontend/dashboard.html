@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eshaas - Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">✨ Eshaas</a>
+    <ul class="navbar-nav">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="clock.html">🕐 World Clock</a></li>
+    </ul>
+    <button class="navbar-btn" onclick="logout()">Logout</button>
+  </nav>
+
+  <div class="dashboard-container">
+    <h1 class="dashboard-title">📊 Your Dashboard</h1>
+    <p class="dashboard-subtitle">Track your emotional wellness journey</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalSessions">—</div>
+        <div class="stat-label">Total Sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalMessages">—</div>
+        <div class="stat-label">Messages Sent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="topEmotion">—</div>
+        <div class="stat-label">Most Detected Emotion</div>
+      </div>
+    </div>
+
+    <div style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #6B7280; text-align: center;">
+      <p style="font-size: 1.1rem;">📈 Analytics will appear here once you have chat sessions.</p>
+      <div class="mt-2">
+        <a href="chat.html" class="btn btn-primary" style="width:auto; display:inline-block; padding: 10px 24px;">Start a Session →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

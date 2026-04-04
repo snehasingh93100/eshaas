@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eshaas - World Clock</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* =============================================
+       Clock Page — Specific Styles
+       ============================================= */
+
+    .clock-page {
+      min-height: calc(100vh - 60px);
+      padding: 30px 20px 50px;
+    }
+
+    .clock-header {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .clock-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-header p {
+      font-size: 1.05rem;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
+
+    /* Format Toggle */
+    .format-toggle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin: 22px 0 32px;
+    }
+
+    .format-toggle span {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 28px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.3);
+      border-radius: 28px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: rgba(255,255,255,0.55);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(28px);
+    }
+
+    /* Clocks Grid */
+    .clocks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
+    /* Clock Card */
+    .clock-card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 20px;
+      padding: 28px 24px 22px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: cardFadeIn 0.5s ease both;
+      border-top: 5px solid transparent;
+    }
+
+    .clock-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+    }
+
+    /* Color-coded top border per zone */
+    .clock-card[data-zone="new-york"]  { border-top-color: #7C3AED; }
+    .clock-card[data-zone="london"]    { border-top-color: #3B82F6; }
+    .clock-card[data-zone="tokyo"]     { border-top-color: #EF4444; }
+    .clock-card[data-zone="sydney"]    { border-top-color: #10B981; }
+    .clock-card[data-zone="dubai"]     { border-top-color: #F59E0B; }
+    .clock-card[data-zone="india"]     { border-top-color: #F97316; }
+
+    /* Accent dot in top-right */
+    .clock-card::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.25;
+    }
+
+    .clock-card[data-zone="new-york"]::before  { color: #7C3AED; }
+    .clock-card[data-zone="london"]::before    { color: #3B82F6; }
+    .clock-card[data-zone="tokyo"]::before     { color: #EF4444; }
+    .clock-card[data-zone="sydney"]::before    { color: #10B981; }
+    .clock-card[data-zone="dubai"]::before     { color: #F59E0B; }
+    .clock-card[data-zone="india"]::before     { color: #F97316; }
+
+    .card-flag {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .card-city {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 2px;
+    }
+
+    .card-timezone {
+      font-size: 0.78rem;
+      color: #9CA3AF;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* Digital time display */
+    .card-time {
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 6px;
+      transition: color 0.3s;
+    }
+
+    .clock-card[data-zone="new-york"]  .card-time { color: #7C3AED; }
+    .clock-card[data-zone="london"]    .card-time { color: #3B82F6; }
+    .clock-card[data-zone="tokyo"]     .card-time { color: #EF4444; }
+    .clock-card[data-zone="sydney"]    .card-time { color: #10B981; }
+    .clock-card[data-zone="dubai"]     .card-time { color: #F59E0B; }
+    .clock-card[data-zone="india"]     .card-time { color: #F97316; }
+
+    /* AM/PM badge */
+    .card-ampm {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      color: #fff;
+      vertical-align: middle;
+      margin-left: 6px;
+      transition: opacity 0.3s;
+    }
+
+    .card-ampm.am  { background: #10B981; }
+    .card-ampm.pm  { background: #7C3AED; }
+    .card-ampm.hidden { opacity: 0; pointer-events: none; }
+
+    /* Date below time */
+    .card-date {
+      font-size: 0.82rem;
+      color: #6B7280;
+      margin-top: 8px;
+    }
+
+    /* Offset badge */
+    .card-offset {
+      position: absolute;
+      bottom: 14px;
+      right: 16px;
+      font-size: 0.72rem;
+      color: #9CA3AF;
+      font-weight: 500;
+    }
+
+    /* Live indicator */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: livePulse 1.4s ease-in-out infinite;
+    }
+
+    /* Staggered entrance animation */
+    .clock-card:nth-child(1) { animation-delay: 0s; }
+    .clock-card:nth-child(2) { animation-delay: 0.07s; }
+    .clock-card:nth-child(3) { animation-delay: 0.14s; }
+    .clock-card:nth-child(4) { animation-delay: 0.21s; }
+    .clock-card:nth-child(5) { animation-delay: 0.28s; }
+    .clock-card:nth-child(6) { animation-delay: 0.35s; }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    /* Tick animation on seconds change */
+    @keyframes tickIn {
+      0%   { opacity: 0.5; transform: scale(0.97); }
+      100% { opacity: 1;   transform: scale(1); }
+    }
+
+    .tick { animation: tickIn 0.18s ease; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .clocks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .clock-header h1 { font-size: 1.8rem; }
+      .clocks-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .card-time { font-size: 1.8rem; }
+      .clock-card { padding: 18px 14px 16px; }
+    }
+
+    @media (max-width: 420px) {
+      .clocks-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Dark-mode-ready (respects system preference) */
+    @media (prefers-color-scheme: dark) {
+      .clock-card {
+        background: rgba(31, 41, 55, 0.97);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      }
+      .card-city  { color: #F3F4F6; }
+      .card-date  { color: #9CA3AF; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="home.html" class="navbar-brand">✨ Eshaas</a>
+    <ul class="navbar-nav">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="clock.html" class="active" aria-current="page">🕐 World Clock</a></li>
+    </ul>
+    <button class="navbar-btn" onclick="logout()" aria-label="Logout">Logout</button>
+  </nav>
+
+  <!-- Clock Page -->
+  <main class="clock-page" aria-label="World Clock">
+
+    <!-- Header -->
+    <header class="clock-header">
+      <h1>🕐 World Clock</h1>
+      <p>Real-time clocks for major cities around the globe</p>
+    </header>
+
+    <!-- 12 / 24-hour toggle -->
+    <div class="format-toggle" role="group" aria-label="Time format toggle">
+      <span id="label24">24-hour</span>
+      <label class="toggle-switch" aria-label="Switch between 12-hour and 24-hour format">
+        <input type="checkbox" id="formatToggle" aria-checked="false">
+        <span class="toggle-slider"></span>
+      </label>
+      <span id="label12">12-hour</span>
+    </div>
+
+    <!-- Clock Cards -->
+    <div class="clocks-grid" id="clocksGrid" role="list" aria-live="polite" aria-atomic="false">
+
+      <!-- New York -->
+      <article class="clock-card" data-zone="new-york" data-tz="America/New_York" role="listitem" aria-label="New York time">
+        <div class="card-flag" aria-hidden="true">🇺🇸</div>
+        <div class="card-city">New York</div>
+        <div class="card-timezone">EST / EDT · UTC−5/−4</div>
+        <div class="card-time" aria-label="Current time in New York">
+          <span class="time-display">--:--:--</span><span class="card-ampm hidden" aria-label="AM or PM"></span>
+        </div>
+        <div class="card-date"></div>
+        <div class="live-indicator" aria-hidden="true">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="card-offset" aria-hidden="true"></div>
+      </article>
+
+      <!-- London -->
+      <article class="clock-card" data-zone="london" data-tz="Europe/London" role="listitem" aria-label="London time">
+        <div class="card-flag" aria-hidden="true">🇬🇧</div>
+        <div class="card-city">London</div>
+        <div class="card-timezone">GMT / BST · UTC+0/+1</div>
+        <div class="card-time" aria-label="Current time in London">
+          <span class="time-display">--:--:--</span><span class="card-ampm hidden" aria-label="AM or PM"></span>
+        </div>
+        <div class="card-date"></div>
+        <div class="live-indicator" aria-hidden="true">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="card-offset" aria-hidden="true"></div>
+      </article>
+
+      <!-- Tokyo -->
+      <article class="clock-card" data-zone="tokyo" data-tz="Asia/Tokyo" role="listitem" aria-label="Tokyo time">
+        <div class="card-flag" aria-hidden="true">🇯🇵</div>
+        <div class="card-city">Tokyo</div>
+        <div class="card-timezone">JST · UTC+9</div>
+        <div class="card-time" aria-label="Current time in Tokyo">
+          <span class="time-display">--:--:--</span><span class="card-ampm hidden" aria-label="AM or PM"></span>
+        </div>
+        <div class="card-date"></div>
+        <div class="live-indicator" aria-hidden="true">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="card-offset" aria-hidden="true"></div>
+      </article>
+
+      <!-- Sydney -->
+      <article class="clock-card" data-zone="sydney" data-tz="Australia/Sydney" role="listitem" aria-label="Sydney time">
+        <div class="card-flag" aria-hidden="true">🇦🇺</div>
+        <div class="card-city">Sydney</div>
+        <div class="card-timezone">AEDT / AEST · UTC+11/+10</div>
+        <div class="card-time" aria-label="Current time in Sydney">
+          <span class="time-display">--:--:--</span><span class="card-ampm hidden" aria-label="AM or PM"></span>
+        </div>
+        <div class="card-date"></div>
+        <div class="live-indicator" aria-hidden="true">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="card-offset" aria-hidden="true"></div>
+      </article>
+
+      <!-- Dubai -->
+      <article class="clock-card" data-zone="dubai" data-tz="Asia/Dubai" role="listitem" aria-label="Dubai time">
+        <div class="card-flag" aria-hidden="true">🇦🇪</div>
+        <div class="card-city">Dubai</div>
+        <div class="card-timezone">GST · UTC+4</div>
+        <div class="card-time" aria-label="Current time in Dubai">
+          <span class="time-display">--:--:--</span><span class="card-ampm hidden" aria-label="AM or PM"></span>
+        </div>
+        <div class="card-date"></div>
+        <div class="live-indicator" aria-hidden="true">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="card-offset" aria-hidden="true"></div>
+      </article>
+
+      <!-- India -->
+      <article class="clock-card" data-zone="india" data-tz="Asia/Kolkata" role="listitem" aria-label="India time">
+        <div class="card-flag" aria-hidden="true">🇮🇳</div>
+        <div class="card-city">India (IST)</div>
+        <div class="card-timezone">IST · UTC+5:30</div>
+        <div class="card-time" aria-label="Current time in India">
+          <span class="time-display">--:--:--</span><span class="card-ampm hidden" aria-label="AM or PM"></span>
+        </div>
+        <div class="card-date"></div>
+        <div class="live-indicator" aria-hidden="true">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="card-offset" aria-hidden="true"></div>
+      </article>
+
+    </div><!-- /.clocks-grid -->
+  </main>
+
+  <script>
+    // =============================================
+    // World Clock — Pure JavaScript
+    // Uses native Date / Intl API for time zones
+    // Optimised with requestAnimationFrame
+    // =============================================
+
+    (function () {
+      'use strict';
+
+      /** Whether to show 12-hour format */
+      var use12Hour = false;
+
+      /** Cache card elements to avoid repeated DOM queries */
+      var cards = [];
+
+      /** Collects and caches references to all clock-card elements */
+      function initCards() {
+        var nodes = document.querySelectorAll('.clock-card[data-tz]');
+        nodes.forEach(function (card) {
+          cards.push({
+            el:          card,
+            tz:          card.getAttribute('data-tz'),
+            timeDisplay: card.querySelector('.time-display'),
+            ampm:        card.querySelector('.card-ampm'),
+            dateEl:      card.querySelector('.card-date'),
+            offsetEl:    card.querySelector('.card-offset'),
+            prevSec:     -1
+          });
+        });
+      }
+
+      /**
+       * Build an Intl.DateTimeFormat for a given timezone.
+       * We build one for 24h and one for 12h per zone and cache them.
+       */
+      var formatterCache = {};
+
+      function getFormatter(tz, hour12) {
+        var key = tz + '_' + (hour12 ? '12' : '24');
+        if (!formatterCache[key]) {
+          formatterCache[key] = new Intl.DateTimeFormat('en-GB', {
+            timeZone:    tz,
+            hour:        '2-digit',
+            minute:      '2-digit',
+            second:      '2-digit',
+            hour12:      hour12
+          });
+        }
+        return formatterCache[key];
+      }
+
+      var dateFormatterCache = {};
+
+      function getDateFormatter(tz) {
+        if (!dateFormatterCache[tz]) {
+          dateFormatterCache[tz] = new Intl.DateTimeFormat('en-GB', {
+            timeZone:  tz,
+            weekday:   'short',
+            day:       '2-digit',
+            month:     'short',
+            year:      'numeric'
+          });
+        }
+        return dateFormatterCache[tz];
+      }
+
+      /**
+       * Get current UTC offset string for a timezone (e.g. "GMT+5:30").
+       * Returns a formatted string representation of the current offset.
+       */
+      function getUTCOffset(tz, now) {
+        // Use Intl to get the numeric offset in minutes
+        var tempFmt = new Intl.DateTimeFormat('en-US', {
+          timeZone:   tz,
+          timeZoneName: 'shortOffset'
+        });
+        var parts = tempFmt.formatToParts(now);
+        var tzPart = parts.find(function (p) { return p.type === 'timeZoneName'; });
+        return tzPart ? tzPart.value : '';
+      }
+
+      /**
+       * Pad single digits with a leading zero
+       * @param {number} n
+       * @returns {string}
+       */
+      function pad(n) {
+        return n < 10 ? '0' + n : String(n);
+      }
+
+      /**
+       * Parse the formatted time string from Intl into parts.
+       * The formatter outputs "HH:MM:SS" or "HH:MM:SS am/pm" (en-GB).
+       * Returns { timeStr, ampmStr }
+       */
+      function parseFormattedTime(formatted) {
+        // Intl with en-GB + hour12:true outputs e.g. "07:30:45 am"
+        // Intl with en-GB + hour12:false outputs e.g. "07:30:45"
+        var lower = formatted.toLowerCase();
+        var ampmStr = '';
+        if (lower.indexOf(' am') !== -1 || lower.indexOf(' pm') !== -1) {
+          var parts = formatted.split(' ');
+          ampmStr  = parts[1] ? parts[1].toUpperCase() : '';
+          return { timeStr: parts[0], ampmStr: ampmStr };
+        }
+        return { timeStr: formatted, ampmStr: '' };
+      }
+
+      /**
+       * Update a single card with the current time
+       * @param {object} cardData
+       * @param {Date}   now
+       */
+      function updateCard(cardData, now) {
+        var fmt    = getFormatter(cardData.tz, use12Hour);
+        var raw    = fmt.format(now);
+        var parsed = parseFormattedTime(raw);
+
+        // Extract seconds to detect second change and add tick class
+        var secPart = parsed.timeStr.split(':')[2];
+        var sec = secPart ? parseInt(secPart, 10) : -1;
+
+        if (sec !== cardData.prevSec) {
+          cardData.prevSec = sec;
+
+          // Update time — add tick animation class
+          cardData.timeDisplay.textContent = parsed.timeStr;
+          cardData.timeDisplay.classList.remove('tick');
+          // Force reflow so animation restarts
+          void cardData.timeDisplay.offsetWidth;
+          cardData.timeDisplay.classList.add('tick');
+
+          // AM / PM badge
+          if (use12Hour && parsed.ampmStr) {
+            cardData.ampm.textContent = parsed.ampmStr;
+            cardData.ampm.className = 'card-ampm ' + parsed.ampmStr.toLowerCase();
+          } else {
+            cardData.ampm.textContent = '';
+            cardData.ampm.className = 'card-ampm hidden';
+          }
+
+          // Date (only update once per second anyway)
+          var dateFmt = getDateFormatter(cardData.tz);
+          cardData.dateEl.textContent = dateFmt.format(now);
+
+          // UTC offset — updates once per minute (at :00 seconds), or on first render
+          if (sec === 0 || cardData.offsetEl.textContent === '') {
+            cardData.offsetEl.textContent = getUTCOffset(cardData.tz, now);
+          }
+        }
+      }
+
+      /** rAF loop — ticks once per animation frame (~60fps) but only writes DOM on new second */
+      var rafId = null;
+
+      function tick() {
+        var now = new Date();
+        cards.forEach(function (c) { updateCard(c, now); });
+        rafId = requestAnimationFrame(tick);
+      }
+
+      /** Handle the 12h/24h toggle */
+      function bindToggle() {
+        var toggle = document.getElementById('formatToggle');
+        if (!toggle) return;
+
+        toggle.addEventListener('change', function () {
+          use12Hour = toggle.checked;
+          toggle.setAttribute('aria-checked', use12Hour ? 'true' : 'false');
+          // Reset prev seconds so all cards refresh immediately
+          cards.forEach(function (c) { c.prevSec = -1; });
+        });
+      }
+
+      /** Logout helper */
+      window.logout = function () {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+      };
+
+      /** Bootstrap */
+      function init() {
+        initCards();
+        bindToggle();
+        tick(); // start the rAF loop
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    }());
+  </script>
+</body>
+</html>
