@@ -3,13 +3,23 @@
 const admin = require('firebase-admin');
 require('dotenv').config();
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+let db = null;
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL
-});
+try {
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+    console.warn('Warning: FIREBASE_SERVICE_ACCOUNT env variable is not set. Firebase features will be unavailable.');
+  } else {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-const db = admin.database();
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: process.env.FIREBASE_DATABASE_URL
+    });
 
-module.exports = db;
+    db = admin.database();
+  }
+} catch (error) {
+  console.error('Firebase initialization error:', error.message);
+}
+
+module.exports = { db };
